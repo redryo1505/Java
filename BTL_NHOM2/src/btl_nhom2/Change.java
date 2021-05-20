@@ -17,7 +17,6 @@ import java.util.Random;
  * @author Hoàng
  */
 public class Change {
-    ArrayList<ArrayList<Point>> listCluster=new ArrayList<ArrayList<Point>>();
     public void addPoint(Matrix mt,ArrayList<Point> listPoint){
         for(int i=0;i<mt.getM();i++)
              for(int j=0;j<mt.getN();j++)
@@ -29,55 +28,58 @@ public class Change {
                  }
              }
     }
-    public void kMean(ArrayList<Point> listPoint,ArrayList<Point> listCentroids,ArrayList<ArrayList<Point>> listCluster,int k){
+    public ArrayList<ArrayList<Point>> kMean(ArrayList<Point> listPoint,ArrayList<Point> listCentroids,int k){
+        ArrayList<ArrayList<Point>> listCluster=new ArrayList<ArrayList<Point>>();
       //random Centroids
-      LinkedHashSet<Point> lc=new LinkedHashSet<Point>();
         Random generator = new Random();
        int max=listPoint.size()-1;
-        while(lc.size()<k){
-            int i=generator.nextInt((max - 0) + max) + 0; 
-            lc.add(listPoint.get(i));
+        while(listCentroids.size()<k){
+            int i=generator.nextInt((max - 0) + 1) + 0; 
+            if(listCentroids.contains(listPoint.get(i)))
+                continue;
+            else
+                listCentroids.add(listPoint.get(i));
         }
-        
-        listCentroids=new ArrayList<Point>(lc);
+        ArrayList<Point> listCentroidsOld=listCentroids;
+        ArrayList<Point> listCentroidsNew=listCentroids;
         boolean check=true;
-        
-        ArrayList<ArrayList<Point>> lcr=new ArrayList<ArrayList<Point>>();
-        
         while(check){
-            ArrayList<ArrayList<Point>> r=new ArrayList<ArrayList<Point>>();
+            //tao
+            listCluster=new ArrayList<ArrayList<Point>>();
             for(int i=0;i<k;i++){
-            ArrayList<Point> lt=null;
-            r.add(lt);
+                ArrayList<Point> lt=new ArrayList<Point>();
+                listCluster.add(lt);
             }
             for(int i=0;i<listPoint.size();i++){
                 ArrayList<Double> d=new ArrayList<Double>();
                 for(int j=0;j<k;j++)
                 {
-                    double kc=listPoint.get(i).distance(listCentroids.get(j));
+                    double kc=listPoint.get(i).distance(listCentroidsNew.get(j));
                     d.add(kc);
                 }
                 double min=Collections.min(d);
                 int id=d.indexOf(min);
-               r.get(id).add(listPoint.get(i));
+               listCluster.get(id).add(listPoint.get(i));
             }
+            listCentroidsNew=new ArrayList<Point>();
             int cs=-1;
-            for(ArrayList<Point> i: r){
+            for(ArrayList<Point> i: listCluster){
                 cs+=1;
                 double Tx=0,Ty=0;
                 int count=0;
                 for(Point j:i){
-                    Tx+=j.getX();
-                    Ty+=j.getY();
+                    Tx=Tx+j.getX();
+                    Ty=Ty+j.getY();
                     count+=1;
                 }
-                listCentroids.get(cs).setX(Tx/count);
-                listCentroids.get(cs).setY(Ty/count);
+                Point ad=new Point(Tx/count,Ty/count);
+                listCentroidsNew.add(ad);
+                
             }
-            lcr=r;
+            
             check=false;
-            for(int i=1;i<k;i++){
-                if(listCentroids.get(0).equals(i))
+            for(int i=0;i<k;i++){
+                if(listCentroidsNew.get(i).equals(listCentroidsOld.get(i)))
                     continue;
                 else
                 {
@@ -85,7 +87,14 @@ public class Change {
                     break;
                 }
             }
+            listCentroidsOld=listCentroidsNew;
     }
-        listCluster=new ArrayList<ArrayList<Point>>(lcr);
+        for(int i=0;i<k;i++)
+        { 
+        listCentroids.get(i).setX(listCentroidsOld.get(i).getX());
+        listCentroids.get(i).setY(listCentroidsOld.get(i).getY());
+        }
+        return listCluster;
+        
     }
 }

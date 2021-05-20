@@ -7,6 +7,9 @@ package btl_nhom2;
 
 import btl_nhom2.Change;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Random;
 
 /**
  *
@@ -17,30 +20,36 @@ public class Main {
         
         Matrix a=new Matrix();
         ArrayList<Point> listPoint=new ArrayList<Point>();
-//        a.setM(15);
-//        a.setN(15);
-//        a.randomMatrix(100);
-//        a.outputMatrix();
-       Point A=new Point(1,1);
-       Point B=new Point(2,1);
-       Point C=new Point(4,3);
-       Point D=new Point(5,4);
+        a.setM(15);
+        a.setN(15);
+        a.randomMatrix(100);
+        a.outputMatrix();
+//       Point A=new Point(1,1);
+//       Point B=new Point(2,1);
+//       Point C=new Point(4,3);
+//       Point D=new Point(5,4);
         Change xl=new Change();
-//        xl.addPoint(, listPoint);
-        listPoint.add(A);
-        listPoint.add(B);
-        listPoint.add(C);
-        listPoint.add(D);
+       xl.addPoint(a, listPoint);
+//        listPoint.add(A);
+//        listPoint.add(B);
+//        listPoint.add(C);
+//        listPoint.add(D);
         for(Point i: listPoint){
             System.out.println(i);
         }
-        ArrayList<ArrayList<Point>> lcr=new ArrayList<ArrayList<Point>>();
+        ArrayList<ArrayList<Point>> listCluster=new ArrayList<ArrayList<Point>>();
         ArrayList<Point> listCentroids=new ArrayList<Point>();
-        xl.kMean(listPoint,listCentroids, lcr, 2);
-        for(ArrayList<Point> i: lcr){
-                for(Point j:i){
-                    System.out.println(j);
-                } 
+       listCluster=xl.kMean(listPoint,listCentroids, 5);        
+        System.out.println("cụm:");
+        for(ArrayList<Point> i:listCluster){
+            for(Point j:i){
+                System.out.print(j);
             }
+            System.out.println("\n============================");
+        }
+              System.out.println("Toạ độ trong tâm");
+       for(Point i: listCentroids){
+           System.out.println(i);
+       }
     }
 }
