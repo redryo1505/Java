@@ -53,7 +53,17 @@ public class Point {
         else
             return false;
     }
+    public double distance(Point A){
+        return Math.sqrt(Math.pow(A.getX()-this.getX(), 2)+Math.pow(A.getY()-this.getY(), 2));
+    }
 
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
     
     
 }
